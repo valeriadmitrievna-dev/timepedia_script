@@ -12,27 +12,11 @@ const weekdays = [
   "sunday",
 ];
 
+let link;
+
 selectContainers.forEach(container => {
   container.querySelectorAll("input").forEach(input => {
     input.onchange = e => {
-      const id = e.target.id;
-      const name = e.target.name;
-
-      //
-      //   switch (name) {
-      //     case "when-date-day":
-      //       console.log(parseInt(id.replace("singleSelect-day-", "")) + 1);
-      //       break;
-      //     case "when-date-weekday":
-      //       console.log(
-      //         weekdays[parseInt(id.replace("singleSelect-weekday-", ""))]
-      //       );
-      //       break;
-      //     default:
-      //       break;
-      //   }
-
-      //
       const checkedInputs = [...selectContainers]
         .map(c => [...c.querySelectorAll("input")])
         .flat()
@@ -58,8 +42,7 @@ selectContainers.forEach(container => {
               ];
             console.log("day: ", day);
             console.log("weekday: ", weekday);
-            btnGo.href = `https://timepedia.io/when-is-${weekday}-the-${day}th`;
-            btnGo.removeAttribute("disabled");
+            link = `https://timepedia.io/when-is-${weekday}-the-${day}th`;
             break;
           default:
             console.log("Unknown check type");
@@ -69,3 +52,9 @@ selectContainers.forEach(container => {
     };
   });
 });
+
+btnGo.onclick = e => {
+  if (link?.length) {
+    window.open(link, "_blank");
+  }
+};
