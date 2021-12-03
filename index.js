@@ -11,49 +11,80 @@ const weekdays = [
   "saturday",
   "sunday",
 ];
+const months = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];
+const zodiacs = [
+  "aries",
+  "taurus",
+  "gemini",
+  "cancer",
+  "leo",
+  "virgo",
+  "libra",
+  "scorpio",
+  "sagittarius",
+  "carpicorn",
+  "aquarius",
+  "pisces",
+];
 
+const host = "https://timepedia.io";
 let link;
 
-selectContainers.forEach(container => {
-  container.querySelectorAll("input").forEach(input => {
-    input.onchange = e => {
-      const checkedInputs = [...selectContainers]
-        .map(c => [...c.querySelectorAll("input")])
-        .flat()
-        .filter(i => i.checked);
-      if (checkedInputs.length === selectContainers.length) {
-        switch (toolsContainer.id) {
-          case "when-date":
-            const day =
-              parseInt(
-                checkedInputs
-                  .map(i => i.id)
-                  .find(i => i.includes("singleSelect-day"))
-                  .replace("singleSelect-day-", "")
-              ) + 1;
-            const weekday =
-              weekdays[
-                parseInt(
-                  checkedInputs
-                    .map(i => i.id)
-                    .find(i => i.includes("singleSelect-weekday"))
-                    .replace("singleSelect-weekday-", "")
-                )
-              ];
-            console.log("day: ", day);
-            console.log("weekday: ", weekday);
-            link = `https://timepedia.io/when-is-${weekday}-the-${day}th`;
-            break;
-          default:
-            console.log("Unknown check type");
-            break;
-        }
-      }
-    };
-  });
-});
+const createLink = (theme, day, weekday, month, year, zodiac) => {
+  const _day = day?.id.replace("day-", "");
+  const _weekday = weekdays[weekday?.id.replace("weekday-", "")];
+  const _month = months[month?.id.replace("month-", "")];
+  const _year = year?.id.replace("year-", "");
+  const _zodiac = zodiacs[zodiac?.id.replace("zodiac-", "")];
+  let result;
+  switch (theme) {
+    case "when-is-date":
+      result = `${host}/when-is-${_weekday}-the-${_day}th`;
+      break;
+    case "number-of-days-in-month":
+      result = `${host}/number-of-days-in-${_month}`;
+      break;
+    case "which-month-in-turn":
+      result = `${host}/which-month-in-turn-${_month}`;
+      break;
+    case "zodiac-signs":
+      result = `${host}/zodiac-signs-${_zodiac}`;
+    default:
+      console.log("Unknown type");
+      break;
+  }
+  return result;
+};
+
+const handleCheckInputs = () => {
+  const checkedInputs = [...selectContainers]
+    .map(c => [...c.querySelectorAll("input")])
+    .flat()
+    .filter(i => i.checked);
+  const day = checkedInputs.find(i => i.name === "day");
+  const weekday = checkedInputs.find(i => i.name === "weekday");
+  const month = checkedInputs.find(i => i.name === "month");
+  const year = checkedInputs.find(i => i.name === "year");
+  const zodiac = checkedInputs.find(i => i.name === "zodiac");
+  const theme = toolsContainer.getAttribute("name");
+  link = createLink(theme, day, weekday, month, year, zodiac);
+};
 
 btnGo.onclick = e => {
+  handleCheckInputs();
   if (link?.length) {
     window.open(link, "_blank");
   }
