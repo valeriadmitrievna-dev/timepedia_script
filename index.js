@@ -39,20 +39,58 @@ const zodiacs = [
   "aquarius",
   "pisces",
 ];
+// массив я переименовала в days, так как иначе случаются конфликты имен
+// в разметке все id идут с нуля (day-0=1th, day-1=2th и так далее)
+const days = [
+  "1th",
+  "2th",
+  "3th",
+  "4th",
+  "5th",
+  "6th",
+  "7th",
+  "8th",
+  "9th",
+  "10th",
+  "11th",
+  "12th",
+  "13th",
+  "14th",
+  "15th",
+  "16th",
+  "17th",
+  "18th",
+  "19th",
+  "20th",
+  "21th",
+  "22th",
+  "23th",
+  "24th",
+  "25th",
+  "26th",
+  "27th",
+  "28th",
+  "29th",
+  "30th",
+  "31th",
+];
 
 const host = "https://timepedia.io";
 let link;
 
 const createLink = (theme, day, weekday, month, year, zodiac) => {
-  const _day = day?.id.replace("day-", "");
+  const _day = days[day?.id.replace("day-", "")];
   const _weekday = weekdays[weekday?.id.replace("weekday-", "")];
   const _month = months[month?.id.replace("month-", "")];
+  // по годам пока оставила так, потому что неизвестно какой должен быть массив для годов
+  // но если будет массив, то вот пример (название массива - "years", так как есть уже переменная year)
+  // const _year = years[year?.id.replace("year-", "")];
   const _year = year?.id.replace("year-", "");
   const _zodiac = zodiacs[zodiac?.id.replace("zodiac-", "")];
   let result;
   switch (theme) {
     case "when-is-date":
-      result = `${host}/when-is-${_weekday}-the-${_day}th`;
+      result = `${host}/when-is-${_weekday}-the-${_day}`;
       break;
     case "number-of-days-in-month":
       result = `${host}/number-of-days-in-${_month}`;
@@ -62,6 +100,7 @@ const createLink = (theme, day, weekday, month, year, zodiac) => {
       break;
     case "zodiac-signs":
       result = `${host}/zodiac-signs-${_zodiac}`;
+      break;
     default:
       console.log("Unknown type");
       break;
@@ -69,6 +108,7 @@ const createLink = (theme, day, weekday, month, year, zodiac) => {
   return result;
 };
 
+// slug - аттрибут name у блока с классом "tools"
 const handleCheckInputs = () => {
   const checkedInputs = [...selectContainers]
     .map(c => [...c.querySelectorAll("input")])
@@ -86,6 +126,6 @@ const handleCheckInputs = () => {
 btnGo.onclick = e => {
   handleCheckInputs();
   if (link?.length) {
-    window.open(link, "_blank");
+    window.open(link, "_self");
   }
 };
